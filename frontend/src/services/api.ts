@@ -1,8 +1,12 @@
 import axios, { AxiosError } from 'axios';
 import type { ApiResponse, CreateExpenseRequest, Expense } from '../types';
 
+// In production (Render), the frontend and backend are typically on different origins.
+// Configure the backend base URL via VITE_API_BASE_URL (e.g. https://my-api.onrender.com).
+const apiBase = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/$/, '') ?? '';
+
 const api = axios.create({
-  baseURL: '/expenses',
+  baseURL: `${apiBase}/expenses`,
   headers: { 'Content-Type': 'application/json' },
   timeout: 10_000,
 });

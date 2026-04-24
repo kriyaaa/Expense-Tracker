@@ -22,7 +22,8 @@ public class CorsConfig {
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",   // Vite dev server
                 "http://localhost:3000",   // CRA / alternate dev port
-                "http://localhost:4173"    // Vite preview
+                "http://localhost:4173",   // Vite preview
+                "https://*.onrender.com"   // Render static sites / web services
         ));
 
         config.setAllowedMethods(List.of("GET", "POST", "DELETE", "OPTIONS"));

@@ -224,3 +224,32 @@ The "Add Expense" button is disabled once a request is in-flight (`submitting` s
 - Authentication / multi-user accounts and per-user data isolation.
 - Update/edit endpoints, recurring expenses, budgets, charts/analytics, exports.
 - Production hardening (containerization, rate limiting, observability, structured audit logging, deployment configs).
+
+---
+
+## Deploy on Render
+
+Render does not currently provide a native Java runtime, so the Spring Boot backend is deployed via Docker.
+
+### 1. Deploy the backend (Web Service)
+1. In Render Dashboard: New -> Web Service.
+2. Connect this repo and pick the service settings:
+   - Runtime/Language: Docker
+   - Root Directory: `backend`
+3. Environment variables:
+   - `SPRING_PROFILES_ACTIVE=local` (quick demo, uses H2 file DB)
+   - `PORT=8080` (or set `PORT` to whatever you want Spring to bind to)
+
+Render web services must bind to `0.0.0.0` and a port (default `PORT=10000`).
+
+### 2. Database (pick one)
+- Quick demo: keep `SPRING_PROFILES_ACTIVE=local` and accept that data is not durable on a Free web service (ephemeral filesystem + spin-down).
+- Persistent MySQL on Render: deploy MySQL as a private service backed by a disk, then run the API with the `mysql` profile and point `spring.datasource.url` at the private hostname.
+- Free-ish persistence: use Render Postgres (free databases expire after 30 days) and add a Postgres profile/driver to this app.
+
+### 3. Deploy the frontend (Static Site)
+1. In Render Dashboard: New -> Static Site.
+2. Root Directory: `frontend`
+3. Build Command: `npm ci && npm run build`
+4. Publish Directory: `dist`
+5. Set env var `VITE_API_BASE_URL` to your backend URL (e.g. `https://<your-backend>.onrender.com`).
