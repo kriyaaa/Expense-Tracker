@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.expensetracker.ExpenseControllerIntegrationTest
 -------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 16.46 s -- in com.expensetracker.ExpenseControllerIntegrationTest
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 7.806 s -- in com.expensetracker.ExpenseControllerIntegrationTest

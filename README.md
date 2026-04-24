@@ -9,7 +9,7 @@ A full-stack personal expense tracker built with **Java Spring Boot** (backend) 
 | Layer     | Technology                         |
 |-----------|------------------------------------|
 | Backend   | Java 17, Spring Boot 3.2, Spring Data JPA |
-| Database  | MySQL 8+                           |
+| Database  | MySQL 8+ (local) / Postgres (Render) |
 | Frontend  | React 18, TypeScript, Vite, Axios  |
 | Testing   | JUnit 5, Spring MockMvc, H2 (test) |
 
@@ -101,6 +101,7 @@ The API starts at **http://localhost:8080**.
 
 - Default: `local` (H2 file DB), no MySQL required.
 - MySQL: `./mvnw spring-boot:run -Dspring-boot.run.profiles=mysql`
+- Postgres: `./mvnw spring-boot:run -Dspring-boot.run.profiles=postgres` (set `DATABASE_URL` or `SPRING_DATASOURCE_*`)
 
 #### Run tests
 
@@ -231,21 +232,19 @@ The "Add Expense" button is disabled once a request is in-flight (`submitting` s
 
 Render does not currently provide a native Java runtime, so the Spring Boot backend is deployed via Docker.
 
-### 1. Deploy the backend (Web Service)
-1. In Render Dashboard: New -> Web Service.
-2. Connect this repo and pick the service settings:
-   - Runtime/Language: Docker
-   - Root Directory: `backend`
-3. Environment variables:
-   - `SPRING_PROFILES_ACTIVE=local` (quick demo, uses H2 file DB)
-   - `PORT=8080` (or set `PORT` to whatever you want Spring to bind to)
+### Recommended: Deploy using the Blueprint (`render.yaml`)
+1. Push the repo to GitHub.
+2. In Render Dashboard: New -> Blueprint.
+3. Select this repo and apply.
+   - This creates a free Render Postgres database and the backend/frontend services.
+   - The backend gets `DATABASE_URL` automatically from the database's internal connection string.
 
 Render web services must bind to `0.0.0.0` and a port (default `PORT=10000`).
 
 ### 2. Database (pick one)
 - Quick demo: keep `SPRING_PROFILES_ACTIVE=local` and accept that data is not durable on a Free web service (ephemeral filesystem + spin-down).
 - Persistent MySQL on Render: deploy MySQL as a private service backed by a disk, then run the API with the `mysql` profile and point `spring.datasource.url` at the private hostname.
-- Free-ish persistence: use Render Postgres (free databases expire after 30 days) and add a Postgres profile/driver to this app.
+- Free-ish persistence: use Render Postgres (free databases expire after 30 days). This repo includes a `postgres` profile and `render.yaml` wiring for it.
 
 ### 3. Deploy the frontend (Static Site)
 1. In Render Dashboard: New -> Static Site.

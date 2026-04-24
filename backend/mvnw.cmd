@@ -18,23 +18,14 @@ IF NOT EXIST "%WRAPPER_PROPERTIES%" (
 IF NOT EXIST "%WRAPPER_JAR%" (
   IF NOT EXIST "%WRAPPER_DIR%" MKDIR "%WRAPPER_DIR%" >NUL 2>&1
 
-  SET "DOWNLOAD_URL="
-  FOR /F "usebackq tokens=1,* delims==" %%A IN ("%WRAPPER_PROPERTIES%") DO (
-    IF "%%A"=="wrapperUrl" SET "DOWNLOAD_URL=%%B"
-  )
-
-  IF NOT DEFINED DOWNLOAD_URL (
-    SET "DOWNLOAD_URL=https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar"
-  )
-
   POWERSHELL -NoProfile -ExecutionPolicy Bypass -Command ^
     "$ErrorActionPreference='Stop';" ^
-    "$url='%DOWNLOAD_URL%';" ^
+    "$url='https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar';" ^
     "$out='%WRAPPER_JAR%';" ^
     "Invoke-WebRequest -Uri $url -OutFile $out"
 
   IF NOT EXIST "%WRAPPER_JAR%" (
-    ECHO Failed to download Maven Wrapper JAR from "%DOWNLOAD_URL%".
+    ECHO Failed to download Maven Wrapper JAR.
     EXIT /B 1
   )
 )
