@@ -204,3 +204,23 @@ The "Add Expense" button is disabled once a request is in-flight (`submitting` s
 
 ### CORS
 `CorsConfig.java` explicitly allows only known dev origins. Before deploying, replace the `allowedOriginPatterns` list with the actual production domain.
+
+---
+
+## Timebox Notes
+
+### Key design decisions (summary)
+- Use a layered backend (controller -> service -> repository) with DTOs to keep HTTP concerns separate from business logic.
+- Use `BigDecimal`/`DECIMAL(12,2)` for money to avoid floating point drift.
+- Use MySQL for real usage and H2 for tests/CI to keep the developer workflow lightweight.
+
+### Trade-offs due to the timebox
+- Kept the API intentionally small (create/list/delete only) to focus on correctness and a smooth end-to-end flow.
+- Limited querying (category filter + newest-first ordering) instead of building out full search, pagination, and multiple sort modes.
+- No DB migrations yet (using Hibernate `ddl-auto` for dev); a real deployment should use Flyway/Liquibase.
+- Duplicate-submit protection is primarily handled in the UI; the backend does not implement idempotency keys.
+
+### Intentionally not done (out of scope)
+- Authentication / multi-user accounts and per-user data isolation.
+- Update/edit endpoints, recurring expenses, budgets, charts/analytics, exports.
+- Production hardening (containerization, rate limiting, observability, structured audit logging, deployment configs).
